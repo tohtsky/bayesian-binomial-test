@@ -7,6 +7,13 @@ canvas {
   <v-app>
     <v-app-bar app flat>
       <v-toolbar-title> Bayesian Binomial Test Calculator</v-toolbar-title>
+      <v-spacer> </v-spacer>
+      <v-toolbar-items>
+        <v-btn text class="text-capitalize" href="https://github.com/tohtsky/bayesian-binomial-test">
+          <v-icon> mdi-github</v-icon>
+          &nbsp; Source code
+        </v-btn>
+      </v-toolbar-items>
     </v-app-bar>
     <v-main>
       <v-container>
@@ -15,22 +22,12 @@ canvas {
             <v-container>
               <v-row>
                 <v-col cols="12">
-                  <Group
-                    v-model="a"
-                    groupName="A"
-                    :posInitial="30"
-                    :totInitial="100"
-                  ></Group>
+                  <Group v-model="a" groupName="A" :posInitial="30" :totInitial="100"></Group>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col cols="12">
-                  <Group
-                    v-model="b"
-                    groupName="B"
-                    :posInitial="b_init.pos"
-                    :totInitial="b_init.tot"
-                  ></Group>
+                  <Group v-model="b" groupName="B" :posInitial="b_init.pos" :totInitial="b_init.tot"></Group>
                 </v-col>
               </v-row>
               <v-row>
@@ -40,28 +37,16 @@ canvas {
                     <v-card-text>
                       <v-row>
                         <v-col cols="6">
-                          <v-text-field
-                            label="alpha"
-                            type="Number"
-                            :error-messages="alphaError"
-                            v-model.number="alpha"
-                          ></v-text-field>
+                          <v-text-field label="alpha" type="Number" :error-messages="alphaError" v-model.number="alpha">
+                          </v-text-field>
                         </v-col>
                         <v-col cols="6">
-                          <v-text-field
-                            label="beta"
-                            type="Number"
-                            v-model.number="beta"
-                            :error-messages="betaError"
-                          ></v-text-field>
+                          <v-text-field label="beta" type="Number" v-model.number="beta" :error-messages="betaError">
+                          </v-text-field>
                         </v-col>
                         <v-col cols="6">
-                          <v-text-field
-                            label="Number of samples"
-                            type="Number"
-                            v-model.number="nSamples"
-                            :error-messages="nSamplesError"
-                          ></v-text-field>
+                          <v-text-field label="Number of samples" type="Number" v-model.number="nSamples"
+                            :error-messages="nSamplesError"></v-text-field>
                         </v-col>
                       </v-row>
                     </v-card-text>
@@ -70,11 +55,7 @@ canvas {
               </v-row>
             </v-container>
           </v-col>
-          <v-col
-            cols="12"
-            lg="8"
-            :style="{ opacity: payload === null ? 0.4 : 1.0 }"
-          >
+          <v-col cols="12" lg="8" :style="{ opacity: payload === null ? 0.4 : 1.0 }">
             <v-row>
               <v-col cols="12">
                 <div class="text-center pt-4 text-h5">
@@ -84,20 +65,12 @@ canvas {
                 <v-row class="pt-4">
                   <v-col cols="1"></v-col>
                   <v-col cols="10">
-                    <canvas
-                      ref="canvas_a_b"
-                      :width="800 * dpr"
-                      :height="300 * dpr"
-                    ></canvas>
+                    <canvas ref="canvas_a_b" :width="800 * dpr" :height="300 * dpr"></canvas>
                   </v-col>
                   <v-col cols="1"></v-col>
                   <v-col cols="1"></v-col>
                   <v-col cols="10">
-                    <canvas
-                      ref="canvas_diff"
-                      :width="800 * dpr"
-                      :height="300 * dpr"
-                    ></canvas>
+                    <canvas ref="canvas_diff" :width="800 * dpr" :height="300 * dpr"></canvas>
                   </v-col>
                   <v-col cols="1"></v-col>
                 </v-row>

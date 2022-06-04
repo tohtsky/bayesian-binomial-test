@@ -1,5 +1,8 @@
 # Bayesian binomial test using WebAssembly
 
+[**Demo**](https://tohtsky.github.io/bayesian-binomial-test/)
+
+
 A/B test significance judgement using bayesian beta-binomial distribution is simple. In Python, we can do that like:
 ```python
 import numpy as np
@@ -26,4 +29,6 @@ posterior_b = rng.beta(alpha_prior + n_success_b, beta_prior + n_events_b - n_su
 
 This simple demo visualizes the Bayesian binomial test, using Rust + WebAssembly to sample from the posterior distribution (obviously overkill, but fun).
 
-You can find a similar example app [here](https://making.lyst.com/bayesian-calculator/).
+This should work off-line. Get a single HTML file from [the latest release](https://github.com/tohtsky/bayesian-binomial-test/releases/latest).
+
+A similar application that influcend this project can be found [here](https://making.lyst.com/bayesian-calculator/).
