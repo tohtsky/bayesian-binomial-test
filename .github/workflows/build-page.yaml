@@ -1,5 +1,8 @@
 name: Build-page
-on: [push]
+on:
+  release:
+    types:
+      - created
 jobs:
   build:
     name: build
@@ -14,3 +17,7 @@ jobs:
           cmd: install # will run `yarn install` command
       - run: |
           yarn wasm && yarn build
+      - name: Release
+        run: |
+          cp dist/index.html 
+          gh release upload ${GITHUB_REF##*/} dist/index.html'#Single HTML Relase artifact' --clobber
