@@ -1,0 +1,16 @@
+name: Build-page
+on: [push]
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jetli/wasm-pack-action@v0.3.0
+        with:
+          version: "latest"
+      - uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: install # will run `yarn install` command
+      - run: |
+          yarn wasm && yarn build
