@@ -1,0 +1,28 @@
+{
+  "name": "vite-version",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "wasm": "wasm-pack build ./bayesian-wasm --target web",
+    "dev": "yarn wasm && vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@mdi/font": "^6.6.96",
+    "sass": "^1.51.0",
+    "unplugin-vue-components": "^0.19.5",
+    "vite": "^2.9.9",
+    "vite-plugin-singlefile": "0.7.1",
+    "vite-plugin-vue2": "^2.0.0",
+    "vite-plugin-wasm-pack": "^0.1.11",
+    "vue-template-compiler": "^2.6.14"
+  },
+  "dependencies": {
+    "vue": "2.x",
+    "vue-ctk-date-time-picker": "^3.0.0-alpha.0",
+    "vuetify": "^2.6.5",
+    "vuetify-datetime-picker": "^2.1.1",
+    "wasmwrap": "^1.0.0"
+  }
+}
