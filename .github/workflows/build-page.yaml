@@ -19,5 +19,4 @@ jobs:
           yarn wasm && yarn build
       - name: Release
         run: |
-          cp dist/index.html 
           gh release upload ${GITHUB_REF##*/} dist/index.html'#Single HTML Relase artifact' --clobber
