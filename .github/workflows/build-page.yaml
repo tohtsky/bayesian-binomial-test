@@ -5,6 +5,9 @@ on:
       - created
 jobs:
   build:
+    permissions:
+      contents: read
+      packages: write
     name: build
     runs-on: ubuntu-latest
     steps:
