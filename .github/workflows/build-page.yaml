@@ -8,6 +8,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     name: build
     runs-on: ubuntu-latest
     steps:
