@@ -1,0 +1,30 @@
+name: Build-page
+on:
+  release:
+    types:
+      - created
+jobs:
+  build:
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jetli/wasm-pack-action@v0.3.0
+        with:
+          version: "latest"
+      - uses: borales/actions-yarn@v2.3.0
+        with:
+          cmd: install # will run `yarn install` command
+      - run: |
+          yarn wasm && yarn build
+      - name: Release
+        run: |
+          gh release upload ${GITHUB_REF##*/} dist/index.html'#Single HTML Relase artifact' --clobber
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          allow_empty_commit: true
