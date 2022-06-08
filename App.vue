@@ -48,6 +48,12 @@ canvas {
                           <v-text-field label="Number of samples" type="Number" v-model.number="nSamples"
                             :error-messages="nSamplesError"></v-text-field>
                         </v-col>
+                        <v-col cols="6">
+                          <v-text-field label="Random seed" type="Number" v-model.number="randomSeed"
+                            :error-messages="randomSeedError"></v-text-field>
+                        </v-col>
+
+
                       </v-row>
                     </v-card-text>
                   </v-card>
@@ -86,6 +92,8 @@ canvas {
 import { compute } from "./bayesian-wasm/pkg";
 import Group from "./components/Group.vue";
 
+
+
 export default {
   data() {
     return {
@@ -105,6 +113,8 @@ export default {
       betaError: [],
       nSamples: 100000,
       nSamplesError: [],
+      randomSeed: 0,
+      randomSeedError: [],
       n_bins: 100,
       result: null,
       dpr: 3,
@@ -117,25 +127,36 @@ export default {
       if (this.b === null) invalid = true;
       let alpha = parseFloat(this.alpha);
       let beta = parseFloat(this.beta);
-      let nSamples = parseInt(this.nSamples);
-      if (isNaN(alpha) || alpha < 0) {
-        this.alphaError = ["valid, positive float required."];
+      let nSamples = parseFloat(this.nSamples, 10);
+      let randomSeed = parseFloat(this.randomSeed, 10);
+      if (isNaN(alpha) || alpha <= 0) {
+        this.alphaError = ["valid, positive floating number required."];
         invalid = true;
       } else {
         this.alphaError = null;
       }
-      if (isNaN(beta) || beta < 0) {
-        this.betaError = ["valid, positive float required."];
+      if (isNaN(beta) || beta <= 0) {
+        this.betaError = ["valid, positive floating number required."];
         invalid = true;
       } else {
         this.betaError = [];
       }
-      if (isNaN(nSamples) || nSamples <= 0) {
-        this.nSamplesError = ["this field must be strictly positive."];
+      if (isNaN(nSamples) || nSamples <= 0 || !Number.isInteger(nSamples)) {
+        this.nSamplesError = ["This field must be a strictly positive integer."];
         invalid = true;
       } else {
         this.nSamplesError = [];
       }
+
+
+      if (isNaN(randomSeed) || randomSeed < 0 || !Number.isInteger(randomSeed)) {
+        this.randomSeedError = ["This field must be a non-negative integer."];
+        invalid = true;
+      } else {
+        this.randomSeedError = [];
+      }
+
+
       if (invalid) {
         return null;
       }
@@ -149,6 +170,7 @@ export default {
         b_pos: this.b.pos,
         n_samples: nSamples,
         n_bins: this.n_bins,
+        random_seed: randomSeed,
       };
       return JSON.stringify(data);
     },

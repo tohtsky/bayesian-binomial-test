@@ -16,6 +16,14 @@ fn _take_f64(v: &Value, key: &str) -> Result<f64, JsValue> {
     }
 }
 
+fn _take_u64(v: &Value, key: &str) -> Result<u64, JsValue> {
+    let target = &v[key];
+    match target.as_u64() {
+        Some(value) => Ok(value),
+        None => Err(JsValue::from_str(key)),
+    }
+}
+
 fn _take_f64_arr(v: &Value, key: &str) -> Result<Vec<f64>, JsValue> {
     let target = &v[key];
     let mut result = Vec::new();
@@ -68,7 +76,6 @@ pub fn compute(
     let dpr_i = dpr as i32;
 
     use serde_json;
-    let mut rng = Pcg64::seed_from_u64(0 as u64);
     let parsed: Value = match serde_json::from_str(target) {
         Ok(v) => Ok(v),
         Err(_) => Err(JsValue::from_str("Invalid JSON!")),
@@ -92,13 +99,16 @@ pub fn compute(
         Err(_) => 1.0,
     };
 
-    let n_samples = match _take_f64(&parsed, "n_samples") {
-        Ok(f) => f as i64,
-        Err(_) => 1000,
+    let n_samples = match _take_u64(&parsed, "n_samples") {
+        Ok(f) => f,
+        Err(_) => 1000 as u64,
     };
-    if n_samples <= 0 {
-        return Err(JsValue::from_str("n_samples must be strictly positive!"));
-    }
+
+    let random_seed = match _take_u64(&parsed, "random_seed") {
+        Ok(f) => f,
+        Err(_) => 0 as u64,
+    };
+
     let n_bins = match _take_f64(&parsed, "n_bins") {
         Ok(f) => f as i64,
         Err(_) => 100,
@@ -113,6 +123,8 @@ pub fn compute(
             0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975, 0.99,
         ],
     };
+
+    let mut rng = Pcg64::seed_from_u64(random_seed);
 
     let dist_a = Beta::new(prior_pos + a_pos, prior_neg + a_tot - a_pos).unwrap();
     let dist_b = Beta::new(prior_pos + b_pos, prior_neg + b_tot - b_pos).unwrap();
