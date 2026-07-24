@@ -1,23 +1,57 @@
-import Vue from "vue";
-import Vuetify from "vuetify/lib/framework";
+import { createApp } from "vue";
+import { createVuetify } from "vuetify";
+import {
+  VApp,
+  VAppBar,
+  VBtn,
+  VCard,
+  VCardText,
+  VCardTitle,
+  VCol,
+  VContainer,
+  VIcon,
+  VMain,
+  VRow,
+  VSpacer,
+  VTextField,
+  VToolbarTitle,
+} from "vuetify/components";
+import { aliases, mdi } from "vuetify/iconsets/mdi";
+import "vuetify/styles";
+import "@mdi/font/css/materialdesignicons.css";
 import App from "./App.vue";
 import init from "./bayesian-wasm/pkg";
 
-Vue.use(Vuetify);
-Vue.config.productionTip = false;
-
 async function main() {
   await init();
-  let vuetify = new Vuetify({
+
+  const vuetify = createVuetify({
+    components: {
+      VApp,
+      VAppBar,
+      VBtn,
+      VCard,
+      VCardText,
+      VCardTitle,
+      VCol,
+      VContainer,
+      VIcon,
+      VMain,
+      VRow,
+      VSpacer,
+      VTextField,
+      VToolbarTitle,
+    },
     icons: {
-      iconfont: "mdi",
+      defaultSet: "mdi",
+      aliases,
+      sets: {
+        mdi,
+      },
     },
   });
 
-  new Vue({
-    render: (h) => h(App),
-    vuetify,
-  }).$mount("#app");
+  createApp(App).use(vuetify).mount("#app");
 }
 
 main();

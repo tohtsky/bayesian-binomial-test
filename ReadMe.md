@@ -29,6 +29,17 @@ posterior_b = rng.beta(alpha_prior + n_success_b, beta_prior + n_events_b - n_su
 
 This simple demo visualizes the Bayesian binomial test, using Rust + WebAssembly to sample from the posterior distribution (obviously overkill, but fun).
 
+All calculator inputs are stored in the URL query string, so a calculation can be bookmarked or shared as-is.
+
+## Development
+
+The frontend uses Vue 3 and pnpm. With `pnpm` and `wasm-pack` installed:
+
+```shell
+pnpm install
+pnpm dev
+```
+
 This should work off-line. Get a single HTML file from [the latest release](https://github.com/tohtsky/bayesian-binomial-test/releases/latest).
 
 A similar application that influcend this project can be found [here](https://making.lyst.com/bayesian-calculator/).

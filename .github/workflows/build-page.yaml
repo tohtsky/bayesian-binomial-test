@@ -1,8 +1,16 @@
-name: Build-page
+name: Build and deploy page
+
 on:
+  push:
+    branches:
+      - main
   release:
     types:
       - created
+
+permissions:
+  contents: write
+
 jobs:
   build:
     env:
@@ -10,19 +18,26 @@ jobs:
     name: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.11.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
       - uses: jetli/wasm-pack-action@v0.3.0
         with:
           version: "latest"
-      - uses: borales/actions-yarn@v3.0.0
-        with:
-          cmd: install # will run `yarn install` command
-      - run: |
-          yarn wasm && yarn build
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm wasm
+      - run: pnpm build
       - name: Release
+        if: github.event_name == 'release'
         run: |
-          gh release upload ${GITHUB_REF##*/} dist/index.html'#Single HTML Relase artifact' --clobber
+          gh release upload "${{ github.ref_name }}" dist/index.html'#Single HTML release artifact' --clobber
       - name: Deploy
+        if: github.event_name == 'push'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

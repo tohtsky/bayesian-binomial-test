@@ -1,16 +1,24 @@
 <template>
-  <v-card outlined>
-    <v-card-title> Group {{ groupName }}</v-card-title>
+  <v-card variant="outlined">
+    <v-card-title>Group {{ groupName }}</v-card-title>
     <v-card-text>
       <v-row>
         <v-col cols="5">
-          <v-text-field label="Total trials" type="Number" v-model.number="tot" :error-messages="totError">
-          </v-text-field>
+          <v-text-field
+            v-model="total"
+            label="Total trials"
+            type="number"
+            :error-messages="totalErrors"
+          />
         </v-col>
         <v-col cols="1"></v-col>
         <v-col cols="5">
-          <v-text-field label="Number of successes" type="Number" v-model.number="pos" :error-messages="posError">
-          </v-text-field>
+          <v-text-field
+            v-model="successes"
+            label="Number of successes"
+            type="number"
+            :error-messages="successErrors"
+          />
         </v-col>
         <v-col cols="1"></v-col>
       </v-row>
@@ -19,18 +27,16 @@
 </template>
 
 <script>
+function asNonNegativeInteger(value) {
+  if (value === "" || value === null || value === undefined) return null;
+  const number = Number(value);
+  return Number.isInteger(number) && number >= 0 ? number : null;
+}
+
 export default {
   props: {
-    value: {
+    modelValue: {
       type: Object,
-      default: {},
-    },
-    totInitial: {
-      type: Number,
-      required: true,
-    },
-    posInitial: {
-      type: Number,
       required: true,
     },
     groupName: {
@@ -38,64 +44,44 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      tot: this.totInitial,
-      pos: this.posInitial,
-      totError: [],
-      posError: [],
-    };
-  },
+  emits: ["update:modelValue"],
   computed: {
-    payload() {
-      let pos = parseInt(this.pos);
-      let tot = parseInt(this.tot);
-      let invalid = false;
-
-      let totError = [];
-      let posError = [];
-      if (isNaN(tot)) {
-        totError.push("The field must be a valid integer");
-        invalid = true;
-      }
-      if (tot < 0) {
-        totError.push("Must be non-negative.");
-        invalid = true;
-      }
-      if (isNaN(pos)) {
-        posError.push("The field required");
-        invalid = true;
-      }
-      if (pos < 0) {
-        posError.push("Must be non-negative.");
-        invalid = true;
-      }
-      if (!invalid) {
-        if (tot < pos) {
-          totError.push("Cannot be smaller than the number of successes");
-          posError.push("Cannot be greater than total trials.");
-          invalid = true;
-        }
-      }
-      this.totError = totError;
-      this.posError = posError;
-      if (invalid) return null;
-      return JSON.stringify({
-        pos,
-        tot,
-      });
+    total: {
+      get() {
+        return this.modelValue.tot;
+      },
+      set(tot) {
+        this.$emit("update:modelValue", { ...this.modelValue, tot });
+      },
     },
-  },
-  watch: {
-    payload(nv) {
-      if (nv === null) {
-        this.$emit("input", null);
-      }
-      this.$emit("input", JSON.parse(nv));
+    successes: {
+      get() {
+        return this.modelValue.pos;
+      },
+      set(pos) {
+        this.$emit("update:modelValue", { ...this.modelValue, pos });
+      },
     },
-  },
-  mounted() {
-    this.$emit("input", JSON.parse(this.payload));
+    totalErrors() {
+      const total = asNonNegativeInteger(this.modelValue.tot);
+      const successes = asNonNegativeInteger(this.modelValue.pos);
+      if (total === null) {
+        return ["A non-negative integer is required."];
+      }
+      return successes !== null && total < successes
+        ? ["Cannot be smaller than the number of successes."]
+        : [];
+    },
+    successErrors() {
+      const total = asNonNegativeInteger(this.modelValue.tot);
+      const successes = asNonNegativeInteger(this.modelValue.pos);
+      if (successes === null) {
+        return ["A non-negative integer is required."];
+      }
+      return total !== null && successes > total
+        ? ["Cannot be greater than total trials."]
+        : [];
+    },
   },
 };
 </script>
